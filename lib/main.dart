@@ -2,10 +2,12 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:quotes_app_starter/test_screen.dart';
 
 void main() {
   runApp(MaterialApp(
-    home: QuotesPage(),
+    debugShowCheckedModeBanner: false,
+    home: TestScreen(),
   ));
 }
 
@@ -21,7 +23,7 @@ class _QuotesPageState extends State<QuotesPage> {
 
   Future<Map> getQuotes() async {
     Response response = await get('https://favqs.com/api/qotd');
-    print(response.body);
+//    print(response.body);
 
     return jsonDecode(response.body);
   }
@@ -57,50 +59,106 @@ class _QuotesPageState extends State<QuotesPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Colors.yellow,
       body: SafeArea(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.only(left: 24.0, bottom: 16),
-              child: Text(
-                '${quote}',
-                style: TextStyle(fontFamily: 'DancingScript', fontSize: 40),
+        child: Stack(children: [
+          Positioned(
+            //wire container------------------------------
+            right: 29,
+            top: 0,
+            child: Container(
+              height: 172,
+              width: 4,
+              color: Colors.white,
+            ),
+          ),
+          Positioned(
+            // socket container--------------------------
+            right: 20,
+            top: 170,
+            child: Container(
+              height: 80,
+              width: 22,
+              decoration: BoxDecoration(
+                color: Colors.black.withOpacity(.2),
+                borderRadius: BorderRadius.all(Radius.circular(20)),
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.only(left: 24.0, bottom: 8),
-              child: Text(
-                '${author}',
-                style: TextStyle(
-                    fontFamily: 'DancingScript',
-                    color: Colors.red,
-                    fontSize: 25),
-              ),
-            ),
-            Row(
-              children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: FloatingActionButton(
-                      backgroundColor: Colors.white,
-                      foregroundColor: Colors.red,
-                      onPressed: () async {
-                        await updateQuotes();
-                      },
-                      child: loading
-                          ? SpinKitCircle(
-                              color: Colors.red,
-                              size: 30.0,
-                            )
-                          : Icon(Icons.arrow_forward)),
+          ),
+          Positioned(
+            // switch container----------------------------
+            right: 21,
+            top: 172,
+            child: GestureDetector(
+              onTap: () {
+                print('hey');
+              },
+              child: Container(
+                height: 20,
+                width: 20,
+                decoration: BoxDecoration(
+                  boxShadow: [
+                    BoxShadow(
+                        color: Colors.black.withOpacity(.75),
+                        blurRadius: 5,
+                        offset: Offset(0, 5)),
+                  ],
+                  color: Colors.white,
+                  borderRadius: BorderRadius.all(Radius.circular(20)),
                 ),
-              ],
-            )
-          ],
-        ),
+              ),
+            ),
+          ),
+          SingleChildScrollView(
+            child: Align(
+              alignment: Alignment.topLeft,
+              child: Column(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.only(
+                        left: 24.0, bottom: 16, top: 100, right: 40),
+                    child: Text(
+                      '$quote',
+                      style: TextStyle(
+                        fontSize: 33,
+                        fontFamily: 'DancingScript',
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 24.0, bottom: 8),
+                    child: Text(
+                      '$author',
+                      style: TextStyle(
+                          fontFamily: 'DancingScript',
+                          color: Colors.red,
+                          fontSize: 25),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: FloatingActionButton(
+                        heroTag: 'nextbutton',
+                        backgroundColor: Colors.white,
+                        foregroundColor: Colors.red,
+                        onPressed: () async {
+                          await updateQuotes();
+                        },
+                        child: loading
+                            ? SpinKitHourGlass(
+                                color: Colors.red,
+                                size: 30.0,
+                              )
+                            : Icon(Icons.arrow_forward)),
+                  )
+                ],
+              ),
+            ),
+          ),
+        ]),
       ),
     );
   }
