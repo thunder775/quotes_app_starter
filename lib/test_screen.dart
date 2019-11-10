@@ -3,6 +3,8 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:http/http.dart';
+import 'package:icon_shadow/icon_shadow.dart';
+import 'navigation_drawer_helper.dart';
 
 class TestScreen extends StatefulWidget {
   @override
@@ -45,11 +47,12 @@ class _TestScreenState extends State<TestScreen> {
   }
 
   Color yello_to_black() {
-    return Color.lerp( Colors.yellow,Color(0xFF00003F), (buttonPositionY) / (60));
+    return Color.lerp(
+        Colors.yellow, Color(0xFF00003F), (buttonPositionY) / (60));
   }
 
   Color black_to_white() {
-    return Color.lerp( Colors.black,Colors.white, (buttonPositionY) / (60));
+    return Color.lerp(Colors.black, Colors.white, (buttonPositionY) / (60));
   }
 
   @override
@@ -61,6 +64,58 @@ class _TestScreenState extends State<TestScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: SafeArea(
+        child: Drawer(
+          elevation: 5,
+          child: Column(
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.only(top: 38.0),
+                child: Icon(
+                  Icons.cloud_done,
+                  color: Colors.lightBlueAccent,
+                  size: MediaQuery.of(context).size.height * .18,
+                ),
+              ),
+              ExpansionTile(
+                title: Text(
+                  'Quotes Animation',
+                  style: TextStyle(fontSize: 22),
+                ),
+                children: <Widget>[
+                  ListTile(
+                    title: Text('Fade Transition'),
+                  ),
+                  ListTile(
+                    title: Text('Slide Transition'),
+                  )
+                ],
+              ),
+              ExpansionTile(
+                title: Text(
+                  'Category',
+                  style: TextStyle(fontSize: 22),
+                ),
+                children: <Widget>[
+                  ListTile(
+                    title: Text('Inspirational'),
+                  ),
+                  ListTile(
+                    title: Text('Motivational'),
+                  )
+                ],
+              ),Expanded(child: SizedBox()),
+              Row(mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Icon(Icons.copyright),
+                  Text('thunder775')
+                ],
+              ),
+              SizedBox(height: 20,)
+            ],
+          ),
+        ),
+      ),
       appBar: AppBar(
         backgroundColor: Colors.white,
         leading: IconButton(
@@ -86,7 +141,8 @@ class _TestScreenState extends State<TestScreen> {
                       child: Text(
                         '$quote',
                         textAlign: TextAlign.left,
-                        style: TextStyle(color: black_to_white(),
+                        style: TextStyle(
+                          color: black_to_white(),
                           fontSize: 33,
                           fontFamily: 'DancingScript',
                         ),
