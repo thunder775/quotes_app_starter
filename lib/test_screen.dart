@@ -11,11 +11,16 @@ class TestScreen extends StatefulWidget {
   _TestScreenState createState() => _TestScreenState();
 }
 
-class _TestScreenState extends State<TestScreen> {
+class _TestScreenState extends State<TestScreen>
+    with SingleTickerProviderStateMixin {
+  AnimationController controller;
+  CurvedAnimation _curvedAnimation;
+
   double buttonPositionY = 58;
   String quote;
   String author;
   bool loading = false;
+  bool fadeTransition = true;
 
   Future<Map> getQuotes() async {
     Response response = await get('https://favqs.com/api/qotd');
@@ -41,6 +46,8 @@ class _TestScreenState extends State<TestScreen> {
     Map jsonMap = await getQuotes();
     isNotLoading();
     setState(() {
+      controller.forward(from: 0);
+
       author = jsonMap['quote']['author'];
       quote = jsonMap['quote']['body'];
     });
@@ -57,6 +64,17 @@ class _TestScreenState extends State<TestScreen> {
 
   @override
   void initState() {
+    controller = AnimationController(
+      vsync: this,
+      duration: Duration(milliseconds: 1200),
+    );
+    _curvedAnimation =
+        CurvedAnimation(curve: Curves.easeInOutExpo, parent: controller);
+    controller.addListener(() {
+      setState(() {
+        print(controller.value);
+      });
+    });
     super.initState();
     updateQuotes();
   }
@@ -84,9 +102,20 @@ class _TestScreenState extends State<TestScreen> {
                 ),
                 children: <Widget>[
                   ListTile(
+                    onTap: () {
+                      fadeTransition = true;
+
+                      setState(() {});
+                      Navigator.of(context).pop();
+                    },
                     title: Text('Fade Transition'),
                   ),
                   ListTile(
+                    onTap: () {
+                      fadeTransition = false;
+                      setState(() {});
+                      Navigator.of(context).pop();
+                    },
                     title: Text('Slide Transition'),
                   )
                 ],
@@ -104,14 +133,15 @@ class _TestScreenState extends State<TestScreen> {
                     title: Text('Motivational'),
                   )
                 ],
-              ),Expanded(child: SizedBox()),
-              Row(mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Icon(Icons.copyright),
-                  Text('thunder775')
-                ],
               ),
-              SizedBox(height: 20,)
+              Expanded(child: SizedBox()),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[Icon(Icons.copyright), Text('thunder775')],
+              ),
+              SizedBox(
+                height: 20,
+              )
             ],
           ),
         ),
@@ -138,15 +168,34 @@ class _TestScreenState extends State<TestScreen> {
                     Padding(
                       padding: const EdgeInsets.only(
                           left: 24.0, bottom: 16, top: 0, right: 40),
-                      child: Text(
-                        '$quote',
-                        textAlign: TextAlign.left,
-                        style: TextStyle(
-                          color: black_to_white(),
-                          fontSize: 33,
-                          fontFamily: 'DancingScript',
-                        ),
-                      ),
+                      child: fadeTransition
+                          ? FadeTransition(
+                              opacity: controller,
+                              child: Text(
+                                '$quote',
+                                textAlign: TextAlign.left,
+                                style: TextStyle(
+                                  color: black_to_white(),
+                                  fontSize: 33,
+                                  fontFamily: 'DancingScript',
+                                ),
+                              ),
+                            )
+                          : SlideTransition(
+                              position: Tween(
+                                      begin: Offset(-1.0, 0.0),
+                                      end: Offset.zero)
+                                  .animate(_curvedAnimation),
+                              child: Text(
+                                '$quote',
+                                textAlign: TextAlign.left,
+                                style: TextStyle(
+                                  color: black_to_white(),
+                                  fontSize: 33,
+                                  fontFamily: 'DancingScript',
+                                ),
+                              ),
+                            ),
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.start,
