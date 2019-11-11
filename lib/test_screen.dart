@@ -207,7 +207,7 @@ class _TestScreenState extends State<TestScreen>
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: <Widget>[
                         Padding(
-                          padding: const EdgeInsets.only(left: 24.0),
+                          padding: const EdgeInsets.only(left: 24.0,bottom: 12),
                           child: FloatingActionButton(
                               heroTag: 'nextbutton',
                               backgroundColor: Colors.white,
