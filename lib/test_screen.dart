@@ -3,8 +3,6 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:http/http.dart';
-import 'package:icon_shadow/icon_shadow.dart';
-import 'navigation_drawer_helper.dart';
 
 class TestScreen extends StatefulWidget {
   @override
@@ -147,14 +145,7 @@ class _TestScreenState extends State<TestScreen>
         ),
       ),
       appBar: AppBar(
-        backgroundColor: Colors.white,
-        leading: IconButton(
-          onPressed: () {},
-          icon: Icon(
-            Icons.arrow_back_ios,
-            color: Colors.black,
-          ),
-        ),
+        backgroundColor: Colors.black,
       ),
       backgroundColor: yello_to_black(),
       body: SafeArea(
@@ -212,21 +203,26 @@ class _TestScreenState extends State<TestScreen>
                         ),
                       ],
                     ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: FloatingActionButton(
-                          heroTag: 'nextbutton',
-                          backgroundColor: Colors.white,
-                          foregroundColor: Colors.red,
-                          onPressed: () async {
-                            await updateQuotes();
-                          },
-                          child: loading
-                              ? SpinKitHourGlass(
-                                  color: Colors.red,
-                                  size: 30.0,
-                                )
-                              : Icon(Icons.arrow_forward)),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: <Widget>[
+                        Padding(
+                          padding: const EdgeInsets.only(left: 24.0),
+                          child: FloatingActionButton(
+                              heroTag: 'nextbutton',
+                              backgroundColor: Colors.white,
+                              foregroundColor: Colors.red,
+                              onPressed: () async {
+                                await updateQuotes();
+                              },
+                              child: loading
+                                  ? SpinKitHourGlass(
+                                      color: Colors.red,
+                                      size: 30.0,
+                                    )
+                                  : Icon(Icons.arrow_forward)),
+                        ),
+                      ],
                     )
                   ],
                 ),
