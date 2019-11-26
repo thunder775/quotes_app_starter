@@ -1,15 +1,18 @@
 import 'dart:convert';
-
+import 'main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:http/http.dart';
 
-class TestScreen extends StatefulWidget {
+class QuotesScreen extends StatefulWidget {
+  final String tag;
+
+  const QuotesScreen({Key key,@required this.tag}) : super(key: key);
   @override
-  _TestScreenState createState() => _TestScreenState();
+  _QuotesScreenState createState() => _QuotesScreenState();
 }
 
-class _TestScreenState extends State<TestScreen>
+class _QuotesScreenState extends State<QuotesScreen>
     with SingleTickerProviderStateMixin {
   AnimationController controller;
   CurvedAnimation _curvedAnimation;
@@ -18,11 +21,17 @@ class _TestScreenState extends State<TestScreen>
   String quote;
   String author;
   bool loading = false;
-  bool fadeTransition = true;
+
+
+
 
   Future<Map> getQuotes() async {
-    Response response = await get('https://favqs.com/api/qotd');
-//    print(response.body);
+    Response response = await get(
+        'https://favqs.com/api/quotes/?filter=${widget.tag}&type=tag',
+        headers: {
+          'Authorization': 'Token token=fb4117205f11d23e8f935e65d6389b2e'
+        });
+    print(response.body);
 
     return jsonDecode(response.body);
   }
@@ -39,6 +48,8 @@ class _TestScreenState extends State<TestScreen>
     });
   }
 
+  int index = 0;
+
   Future updateQuotes() async {
     isLoading();
     Map jsonMap = await getQuotes();
@@ -46,18 +57,18 @@ class _TestScreenState extends State<TestScreen>
     setState(() {
       controller.forward(from: 0);
 
-      author = jsonMap['quote']['author'];
-      quote = jsonMap['quote']['body'];
+      author = jsonMap['quotes'][index]['author'];
+      quote = jsonMap['quotes'][index]['body'];
     });
   }
 
   Color yello_to_black() {
     return Color.lerp(
-        Colors.yellow, Color(0xFF00003F), (buttonPositionY) / (60));
+        Color(0xFF00003F), Color(0xFF984FD0), (buttonPositionY) / (60));
   }
 
   Color black_to_white() {
-    return Color.lerp(Colors.black, Colors.white, (buttonPositionY) / (60));
+    return Color.lerp(Colors.white, Colors.white, (buttonPositionY) / (60));
   }
 
   @override
@@ -69,9 +80,7 @@ class _TestScreenState extends State<TestScreen>
     _curvedAnimation =
         CurvedAnimation(curve: Curves.easeInOutExpo, parent: controller);
     controller.addListener(() {
-      setState(() {
-        print(controller.value);
-      });
+      setState(() {});
     });
     super.initState();
     updateQuotes();
@@ -80,72 +89,17 @@ class _TestScreenState extends State<TestScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: SafeArea(
-        child: Drawer(
-          elevation: 5,
-          child: Column(
-            children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.only(top: 38.0),
-                child: Icon(
-                  Icons.cloud_done,
-                  color: Colors.lightBlueAccent,
-                  size: MediaQuery.of(context).size.height * .18,
-                ),
-              ),
-              ExpansionTile(
-                title: Text(
-                  'Quotes Animation',
-                  style: TextStyle(fontSize: 22),
-                ),
-                children: <Widget>[
-                  ListTile(
-                    onTap: () {
-                      fadeTransition = true;
-
-                      setState(() {});
-                      Navigator.of(context).pop();
-                    },
-                    title: Text('Fade Transition'),
-                  ),
-                  ListTile(
-                    onTap: () {
-                      fadeTransition = false;
-                      setState(() {});
-                      Navigator.of(context).pop();
-                    },
-                    title: Text('Slide Transition'),
-                  )
-                ],
-              ),
-              ExpansionTile(
-                title: Text(
-                  'Category',
-                  style: TextStyle(fontSize: 22),
-                ),
-                children: <Widget>[
-                  ListTile(
-                    title: Text('Inspirational'),
-                  ),
-                  ListTile(
-                    title: Text('Motivational'),
-                  )
-                ],
-              ),
-              Expanded(child: SizedBox()),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[Icon(Icons.copyright), Text('thunder775')],
-              ),
-              SizedBox(
-                height: 20,
-              )
-            ],
-          ),
-        ),
-      ),
       appBar: AppBar(
-        backgroundColor: Colors.black,
+        leading: IconButton(
+          icon: Icon(
+            Icons.arrow_back_ios,
+            color: yello_to_black(),
+          ),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+        backgroundColor: Colors.white,
       ),
       backgroundColor: yello_to_black(),
       body: SafeArea(
@@ -168,7 +122,7 @@ class _TestScreenState extends State<TestScreen>
                                 style: TextStyle(
                                   color: black_to_white(),
                                   fontSize: 33,
-                                  fontFamily: 'DancingScript',
+                                  fontFamily: 'Ubuntu',
                                 ),
                               ),
                             )
@@ -183,7 +137,7 @@ class _TestScreenState extends State<TestScreen>
                                 style: TextStyle(
                                   color: black_to_white(),
                                   fontSize: 33,
-                                  fontFamily: 'DancingScript',
+                                  fontFamily: 'Ubuntu',
                                 ),
                               ),
                             ),
@@ -198,7 +152,7 @@ class _TestScreenState extends State<TestScreen>
                             style: TextStyle(
                                 fontFamily: 'DancingScript',
                                 color: Colors.red,
-                                fontSize: 25),
+                                fontSize: 33),
                           ),
                         ),
                       ],
@@ -207,13 +161,18 @@ class _TestScreenState extends State<TestScreen>
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: <Widget>[
                         Padding(
-                          padding: const EdgeInsets.only(left: 24.0,bottom: 12),
+                          padding:
+                              const EdgeInsets.only(left: 24.0, bottom: 12),
                           child: FloatingActionButton(
                               heroTag: 'nextbutton',
                               backgroundColor: Colors.white,
                               foregroundColor: Colors.red,
                               onPressed: () async {
+                                index += 1;
+                                setState(() {});
                                 await updateQuotes();
+
+
                               },
                               child: loading
                                   ? SpinKitHourGlass(
@@ -268,11 +227,8 @@ class _TestScreenState extends State<TestScreen>
                       right: 12,
                       child: GestureDetector(
                         onVerticalDragUpdate: (DragUpdateDetails details) {
-//                          print(details.delta.dy);
                           buttonPositionY -= details.delta.dy;
                           buttonPositionY = buttonPositionY.clamp(2.0, 58.0);
-//                          if(buttonPositionY>28) buttonPositionY = 58;
-//                          else if(buttonPositionY<=28) buttonPositionY = 2;
                           setState(() {});
                         },
                         child: Container(
