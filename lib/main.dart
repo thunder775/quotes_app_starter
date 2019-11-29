@@ -225,32 +225,25 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
             Expanded(
-              child: Padding(
-                padding: const EdgeInsets.all(18.0),
-                child: ListView(
-                  children: <Widget>[
-                    CategoryCard(
-                      category: 'Inspirational',
-                      image: 'inspire',
-                    ),
-                    CategoryCard(
-                      category: 'Life',
-                      image: 'life',
-                    ),
-                    CategoryCard(
-                      category: 'Management',
-                      image: 'management',
-                    ),
-                    CategoryCard(
-                      category: 'Sports',
-                      image: 'sports',
-                    ),
-                    CategoryCard(
-                      category: 'Students',
-                      image: 'students',
-                    ),
-                  ],
-                ),
+              child: ListView(
+                children: <Widget>[
+                  CategoryCard(
+                    category: 'Inspirational',
+                    image: 'inspire',
+                  ),
+                  CategoryCard(
+                    category: 'Life',
+                    image: 'life',
+                  ),
+                  CategoryCard(
+                    category: 'Management',
+                    image: 'management',
+                  ),
+                  CategoryCard(
+                    category: 'Sports',
+                    image: 'sports',
+                  ),
+                ],
               ),
             )
           ],
@@ -281,7 +274,7 @@ class CategoryCard extends StatelessWidget {
         print('hey');
       },
       child: Padding(
-        padding: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.only(top:26.0,left: 26,right: 26),
         child: ClipRRect(
           borderRadius: BorderRadius.all(Radius.circular(40)),
           child: Container(
