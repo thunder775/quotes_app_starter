@@ -18,8 +18,8 @@ class _QuotesScreenState extends State<QuotesScreen>
   CurvedAnimation _curvedAnimation;
 
   double buttonPositionY = 58;
-  String quote;
-  String author;
+  String quote='Fetching Data';
+  String author = 'Fetching Data';
   bool loading = false;
 
 
@@ -64,11 +64,11 @@ class _QuotesScreenState extends State<QuotesScreen>
 
   Color yello_to_black() {
     return Color.lerp(
-        Color(0xFF00003F), Color(0xFF984FD0), (buttonPositionY) / (60));
+        Color(0xFF00003F), Colors.white, (buttonPositionY) / (60));
   }
 
   Color black_to_white() {
-    return Color.lerp(Colors.white, Colors.white, (buttonPositionY) / (60));
+    return Color.lerp(Colors.white, Colors.black, (buttonPositionY) / (60));
   }
 
   @override
@@ -122,7 +122,7 @@ class _QuotesScreenState extends State<QuotesScreen>
                                 style: TextStyle(
                                   color: black_to_white(),
                                   fontSize: 33,
-                                  fontFamily: 'Ubuntu',
+                                  fontFamily: 'DancingScript',
                                 ),
                               ),
                             )
